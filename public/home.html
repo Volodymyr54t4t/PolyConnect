@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="uk" class="bg-app">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Головна — ФІКТ ЖДТУ</title>
+    <meta name="description" content="Головна сторінка порталу ФІКТ Житомирської політехніки" />
+    <link rel="stylesheet" href="/home.css" />
+  </head>
+  <body>
+    <div id="loader" class="loader">Завантаження…</div>
+
+    <div id="app" class="hidden">
+      <!-- Верхня панель -->
+      <header class="topbar">
+        <a href="/home.html" class="topbar__brand" aria-label="На головну">
+          <span class="topbar__badge">ФІКТ</span>
+          <span class="topbar__title">Портал ЖДТУ</span>
+        </a>
+        <nav class="topbar__nav" aria-label="Головна навігація">
+          <a href="/home.html" class="navlink is-active">Головна</a>
+          <a id="profileLink" href="/profileStudent.html" class="navlink">Мій профіль</a>
+          <button id="logoutBtn" class="btn btn--ghost" type="button">Вийти</button>
+        </nav>
+      </header>
+
+      <main class="wrap">
+        <!-- Банер незаповненого профілю -->
+        <section id="incompleteBanner" class="banner hidden" role="alert">
+          <div class="banner__icon" aria-hidden="true">!</div>
+          <div class="banner__body">
+            <h2 class="banner__title">Ваш профіль ще не заповнений</h2>
+            <p class="banner__text" id="bannerText">
+              Будь ласка, заповніть обовʼязкові поля профілю, щоб інші користувачі порталу могли вас бачити.
+            </p>
+          </div>
+          <a id="bannerBtn" href="/profileStudent.html" class="btn btn--primary">Заповнити профіль</a>
+        </section>
+
+        <!-- Банер заповненого профілю -->
+        <section id="completeBanner" class="banner banner--ok hidden">
+          <div class="banner__icon banner__icon--ok" aria-hidden="true">✓</div>
+          <div class="banner__body">
+            <h2 class="banner__title">Профіль заповнено</h2>
+            <p class="banner__text">Ваш профіль повністю заповнений. Дякуємо!</p>
+          </div>
+          <a id="bannerOkBtn" href="/profileStudent.html" class="btn btn--secondary">Переглянути профіль</a>
+        </section>
+
+        <!-- Привітання -->
+        <section class="hero card">
+          <div class="hero__avatar" id="heroAvatar" aria-hidden="true">Ф</div>
+          <div class="hero__content">
+            <p class="hero__hello">Вітаємо на порталі,</p>
+            <h1 class="hero__name" id="heroName">—</h1>
+            <span class="chip" id="heroRole">—</span>
+          </div>
+        </section>
+
+        <!-- Швидкі дії -->
+        <h2 class="section-title">Швидкий доступ</h2>
+        <section class="tiles">
+          <a id="tileProfile" href="/profileStudent.html" class="tile">
+            <span class="tile__icon" aria-hidden="true">👤</span>
+            <span class="tile__title">Мій профіль</span>
+            <span class="tile__text">Переглянути та редагувати особисті дані</span>
+          </a>
+          <div class="tile tile--static">
+            <span class="tile__icon" aria-hidden="true">🎓</span>
+            <span class="tile__title">Факультет ФІКТ</span>
+            <span class="tile__text">Факультет інформаційно-компʼютерних технологій</span>
+          </div>
+          <div class="tile tile--static">
+            <span class="tile__icon" aria-hidden="true">📚</span>
+            <span class="tile__title">Кафедра ІПЗ</span>
+            <span class="tile__text">Інженерія програмного забезпечення</span>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="/home.js"></script>
+  </body>
+</html>

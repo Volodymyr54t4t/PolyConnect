@@ -122,9 +122,29 @@ function publicUser(u) {
   }
 }
 
-// Куди перенаправляти після авторизації залежно від ролі
+// Сторінка профілю залежно від ролі
 function profilePath(role) {
   return role === "Студент" ? "/profileStudent.html" : "/profileTeacher.html"
+}
+
+// Головна сторінка — куди перенаправляти одразу після авторизації
+function homePath() {
+  return "/home.html"
+}
+
+// Чи заповнені обовʼязкові поля профілю
+function isProfileComplete(user) {
+  if (user.role === "Студент") {
+    return Boolean((user.group_name || "").trim()) && Boolean(user.course)
+  }
+  // Викладач та адміністративні ролі
+  const hasSubjects = Array.isArray(user.subjects) ? user.subjects.length > 0 : false
+  return (
+    Boolean((user.position || "").trim()) &&
+    Boolean((user.department || "").trim()) &&
+    hasSubjects &&
+    Boolean((user.contacts || "").trim())
+  )
 }
 
 // Мідлвеар авторизації (вбудований у цей файл)
@@ -184,7 +204,7 @@ app.post("/api/register", async (req, res) => {
       message: "Реєстрація успішна",
       token,
       user: publicUser(user),
-      redirect: profilePath(user.role),
+      redirect: homePath(),
     })
   } catch (err) {
     console.error("[v0] register error:", err.message)
@@ -221,7 +241,7 @@ app.post("/api/login", async (req, res) => {
       message: "Вхід успішний",
       token,
       user: publicUser(user),
-      redirect: profilePath(user.role),
+      redirect: homePath(),
     })
   } catch (err) {
     console.error("[v0] login error:", err.message)
@@ -241,7 +261,13 @@ app.get("/api/me", authRequired, async (req, res) => {
     const result = await pool.query("SELECT * FROM users WHERE id = $1", [req.user.id])
     if (result.rows.length === 0) return res.status(404).json({ error: "Користувача не знайдено" })
     const user = publicUser(result.rows[0])
-    res.json({ user, redirect: profilePath(user.role) })
+    res.json({
+      user,
+      redirect: profilePath(user.role),
+      home: homePath(),
+      profile_path: profilePath(user.role),
+      profile_complete: isProfileComplete(user),
+    })
   } catch (err) {
     console.error("[v0] me error:", err.message)
     res.status(500).json({ error: "Помилка сервера" })

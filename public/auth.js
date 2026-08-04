@@ -70,8 +70,8 @@ async function checkSession() {
     const res = await fetch("/api/me")
     if (!res.ok) return renderAuth()
     const data = await res.json()
-    // Вже авторизований — одразу на сторінку профілю
-    window.location.href = data.redirect || "/"
+    // Вже авторизований — одразу на головну сторінку
+    window.location.href = data.home || "/home.html"
   } catch {
     renderAuth()
   }
