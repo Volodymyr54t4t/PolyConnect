@@ -1,0 +1,330 @@
+:root {
+  --bg: #0f1729;
+  --panel: #ffffff;
+  --ink: #0f1729;
+  --muted: #5b6472;
+  --line: #e4e7ec;
+  --primary: #1e5eff;
+  --primary-ink: #ffffff;
+  --danger: #d92d20;
+  --ok: #067647;
+  --ok-bg: #ecfdf3;
+  --err-bg: #fef3f2;
+  --radius: 14px;
+  --shadow: 0 20px 60px rgba(6, 14, 40, 0.18);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Segoe UI", Roboto, system-ui, -apple-system, sans-serif;
+  color: var(--ink);
+  background: radial-gradient(120% 120% at 0% 0%, #17224a 0%, #0f1729 55%, #0a0f20 100%);
+  min-height: 100vh;
+}
+
+.page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+}
+
+/* -------- Ліва брендова панель -------- */
+.brand {
+  display: flex;
+  align-items: center;
+  padding: 48px;
+  color: #fff;
+}
+
+.brand__inner {
+  max-width: 460px;
+}
+
+.brand__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #1e5eff, #4b8bff);
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: 1px;
+  box-shadow: 0 12px 30px rgba(30, 94, 255, 0.4);
+}
+
+.brand__title {
+  margin-top: 28px;
+  font-size: 34px;
+  line-height: 1.2;
+  font-weight: 800;
+  text-wrap: balance;
+}
+
+.brand__subtitle {
+  margin-top: 18px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #b9c2d6;
+}
+
+.brand__domain {
+  color: #7fa9ff;
+  font-weight: 700;
+}
+
+.brand__roles {
+  list-style: none;
+  margin-top: 32px;
+  display: grid;
+  gap: 14px;
+}
+
+.brand__roles li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 15px;
+  color: #d5dbe8;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4b8bff;
+  box-shadow: 0 0 0 4px rgba(75, 139, 255, 0.18);
+}
+
+/* -------- Права панель з формами -------- */
+.panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.card {
+  width: 100%;
+  max-width: 440px;
+  background: var(--panel);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 32px;
+}
+
+.tabs {
+  display: flex;
+  gap: 6px;
+  background: #f3f5f9;
+  padding: 6px;
+  border-radius: 12px;
+  margin-bottom: 22px;
+}
+
+.tab {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 10px 8px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tab.is-active {
+  background: #fff;
+  color: var(--primary);
+  box-shadow: 0 2px 8px rgba(15, 23, 41, 0.08);
+}
+
+.form {
+  display: grid;
+  gap: 16px;
+}
+
+.form__title {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.form__hint {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin-top: -6px;
+}
+
+.field {
+  display: grid;
+  gap: 7px;
+}
+
+.field span {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.field input,
+.field select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font-size: 15px;
+  color: var(--ink);
+  background: #fff;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.field input:focus,
+.field select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(30, 94, 255, 0.14);
+}
+
+.btn {
+  width: 100%;
+  padding: 13px 16px;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.1s, opacity 0.15s, background 0.15s;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn--primary {
+  background: var(--primary);
+  color: var(--primary-ink);
+}
+
+.btn--primary:hover {
+  background: #1a52e0;
+}
+
+.btn--secondary {
+  background: #eef2ff;
+  color: var(--primary);
+}
+
+.btn--danger {
+  background: var(--danger);
+  color: #fff;
+  margin-top: 20px;
+}
+
+.btn--danger:hover {
+  background: #b42318;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.alert {
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  margin-bottom: 18px;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.alert.is-ok {
+  background: var(--ok-bg);
+  color: var(--ok);
+}
+
+.alert.is-err {
+  background: var(--err-bg);
+  color: var(--danger);
+}
+
+.reset {
+  display: grid;
+  gap: 16px;
+  margin-top: 6px;
+  padding-top: 18px;
+  border-top: 1px dashed var(--line);
+}
+
+/* -------- Панель акаунта -------- */
+.account {
+  text-align: center;
+}
+
+.account__avatar {
+  width: 76px;
+  height: 76px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  font-weight: 800;
+  color: #fff;
+  background: linear-gradient(135deg, #1e5eff, #4b8bff);
+}
+
+.account__name {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.account__email {
+  color: var(--muted);
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.badge {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* -------- Адаптив -------- */
+@media (max-width: 860px) {
+  .page {
+    grid-template-columns: 1fr;
+  }
+  .brand {
+    padding: 36px 28px 8px;
+  }
+  .brand__title {
+    font-size: 26px;
+  }
+  .brand__roles {
+    grid-template-columns: 1fr 1fr;
+  }
+  .panel {
+    padding: 24px;
+  }
+}

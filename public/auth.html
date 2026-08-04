@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Система авторизації ЖДТУ — факультет інформаційно-комп'ютерних технологій (ФІКТ)" />
+    <title>Авторизація — ЖДТУ ФІКТ</title>
+    <link rel="stylesheet" href="auth.css" />
+  </head>
+  <body>
+    <main class="page">
+      <section class="brand" aria-hidden="false">
+        <div class="brand__inner">
+          <div class="brand__badge">ЖДТУ</div>
+          <h1 class="brand__title">Портал факультету інформаційно-комп'ютерних технологій</h1>
+          <p class="brand__subtitle">
+            Єдина система доступу для деканату, кафедр, викладачів та студентів.
+            Вхід дозволено лише за корпоративною поштою
+            <span class="brand__domain">@ztu.edu.ua</span>.
+          </p>
+          <ul class="brand__roles">
+            <li><span class="dot"></span>Декан ФІКТ</li>
+            <li><span class="dot"></span>Завідувач кафедри</li>
+            <li><span class="dot"></span>Викладач</li>
+            <li><span class="dot"></span>Студент</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="panel">
+        <!-- Панель авторизованого користувача -->
+        <div id="account" class="card account hidden" aria-live="polite">
+          <div class="account__avatar" id="accAvatar">?</div>
+          <h2 class="account__name" id="accName">—</h2>
+          <p class="account__email" id="accEmail">—</p>
+          <span class="badge" id="accRole">—</span>
+          <button class="btn btn--danger" id="logoutBtn" type="button">Вийти з системи</button>
+        </div>
+
+        <!-- Форми авторизації -->
+        <div id="authBox" class="card">
+          <div class="tabs" role="tablist">
+            <button class="tab is-active" data-view="login" role="tab" type="button">Вхід</button>
+            <button class="tab" data-view="register" role="tab" type="button">Реєстрація</button>
+            <button class="tab" data-view="forgot" role="tab" type="button">Відновлення</button>
+          </div>
+
+          <div id="alert" class="alert hidden" role="status"></div>
+
+          <!-- Вхід -->
+          <form id="loginForm" class="form" data-view="login" novalidate>
+            <h2 class="form__title">Вхід у систему</h2>
+            <label class="field">
+              <span>Корпоративна пошта</span>
+              <input type="email" name="email" placeholder="ivanov@ztu.edu.ua" autocomplete="email" required />
+            </label>
+            <label class="field">
+              <span>Пароль</span>
+              <input type="password" name="password" placeholder="••••••••" autocomplete="current-password" required />
+            </label>
+            <button class="btn btn--primary" type="submit">Увійти</button>
+          </form>
+
+          <!-- Реєстрація -->
+          <form id="registerForm" class="form hidden" data-view="register" novalidate>
+            <h2 class="form__title">Створення акаунта</h2>
+            <label class="field">
+              <span>Повне ім'я (ПІБ)</span>
+              <input type="text" name="full_name" placeholder="Іваненко Іван Іванович" autocomplete="name" required />
+            </label>
+            <label class="field">
+              <span>Корпоративна пошта</span>
+              <input type="email" name="email" placeholder="ivanov@ztu.edu.ua" autocomplete="email" required />
+            </label>
+            <label class="field">
+              <span>Роль</span>
+              <select name="role" required>
+                <option value="" disabled selected>Оберіть роль</option>
+                <option value="ДеканФІКТ">Декан ФІКТ</option>
+                <option value="Завідувач Кафедри">Завідувач кафедри</option>
+                <option value="Викладач">Викладач</option>
+                <option value="Студент">Студент</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Пароль (мін. 6 символів)</span>
+              <input type="password" name="password" placeholder="••••••••" autocomplete="new-password" required />
+            </label>
+            <button class="btn btn--primary" type="submit">Зареєструватися</button>
+          </form>
+
+          <!-- Відновлення пароля -->
+          <form id="forgotForm" class="form hidden" data-view="forgot" novalidate>
+            <h2 class="form__title">Відновлення пароля</h2>
+            <p class="form__hint">Введіть пошту — ми згенеруємо токен для скидання пароля.</p>
+            <label class="field">
+              <span>Корпоративна пошта</span>
+              <input type="email" name="email" placeholder="ivanov@ztu.edu.ua" autocomplete="email" required />
+            </label>
+            <button class="btn btn--primary" type="submit">Отримати токен</button>
+
+            <div id="resetBlock" class="reset hidden">
+              <label class="field">
+                <span>Токен відновлення</span>
+                <input type="text" name="token" placeholder="Вставте отриманий токен" />
+              </label>
+              <label class="field">
+                <span>Новий пароль</span>
+                <input type="password" name="new_password" placeholder="••••••••" autocomplete="new-password" />
+              </label>
+              <button class="btn btn--secondary" type="button" id="resetBtn">Змінити пароль</button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <script src="auth.js"></script>
+  </body>
+</html>
