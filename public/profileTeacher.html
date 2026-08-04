@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="uk" class="theme">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Профіль викладача — ЖДТУ</title>
+    <link rel="stylesheet" href="/profileTeacher.css" />
+  </head>
+  <body>
+    <div id="loader" class="loader">Завантаження…</div>
+
+    <div id="app" class="app hidden">
+      <header class="topbar">
+        <div class="topbar__brand">
+          <span class="topbar__badge">ZTU</span>
+          <span class="topbar__title">Профіль викладача</span>
+        </div>
+        <button id="logoutBtn" class="btn btn--ghost" type="button">Вийти</button>
+      </header>
+
+      <main class="wrap">
+        <div id="alert" class="alert hidden" role="alert"></div>
+
+        <section class="grid">
+          <!-- Ліва картка -->
+          <aside class="card card--profile">
+            <div class="photo">
+              <img id="photoPreview" class="photo__img hidden" alt="Фото викладача" />
+              <div id="photoPlaceholder" class="photo__placeholder">В</div>
+            </div>
+            <label class="photo__upload btn btn--secondary">
+              Змінити фото
+              <input id="photoInput" type="file" accept="image/*" hidden />
+            </label>
+
+            <h1 id="viewName" class="profile__name">—</h1>
+            <p id="viewEmail" class="profile__email">—</p>
+            <span id="viewRole" class="chip">Викладач</span>
+
+            <ul class="facts">
+              <li><span>Посада</span><b id="viewPosition">—</b></li>
+              <li><span>Кафедра</span><b id="viewDept">—</b></li>
+            </ul>
+
+            <div class="subjects-view">
+              <span class="subjects-view__label">Предмети</span>
+              <div id="viewSubjects" class="tags"><span class="tags__empty">—</span></div>
+            </div>
+          </aside>
+
+          <!-- Права картка -->
+          <div class="card">
+            <h2 class="card__title">Редагування профілю</h2>
+            <form id="profileForm" class="form">
+              <label class="field">
+                <span>ПІБ</span>
+                <input name="full_name" type="text" placeholder="Прізвище Ім'я По батькові" required />
+              </label>
+
+              <label class="field">
+                <span>Email</span>
+                <input id="emailField" type="email" disabled />
+              </label>
+
+              <label class="field">
+                <span>Посада</span>
+                <select id="positionSelect" name="position"></select>
+              </label>
+
+              <label id="positionOtherField" class="field hidden">
+                <span>Вкажіть посаду (Інше)</span>
+                <input id="positionOther" type="text" placeholder="Ваша посада" />
+              </label>
+
+              <label class="field">
+                <span>Кафедра</span>
+                <select name="department">
+                  <option value="Інженерія програмного забезпечення" selected>
+                    Інженерія програмного забезпечення
+                  </option>
+                </select>
+              </label>
+
+              <div class="field">
+                <span>Предмети</span>
+                <div class="subjects-picker">
+                  <input id="subjectSearch" type="text" placeholder="Пошук предмета…" class="subjects-picker__search" />
+                  <div id="subjectList" class="subjects-picker__list"></div>
+                </div>
+              </div>
+
+              <label class="field">
+                <span>Контакти</span>
+                <textarea
+                  name="contacts"
+                  rows="4"
+                  placeholder="Телефон, месенджери, посилання, кабінет…"
+                ></textarea>
+              </label>
+
+              <button class="btn btn--primary" type="submit">Зберегти зміни</button>
+            </form>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="/profileTeacher.js"></script>
+  </body>
+</html>

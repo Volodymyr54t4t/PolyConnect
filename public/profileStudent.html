@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="uk" class="theme">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Профіль студента — ЖДТУ</title>
+    <link rel="stylesheet" href="/profileStudent.css" />
+  </head>
+  <body>
+    <div id="loader" class="loader">Завантаження…</div>
+
+    <div id="app" class="app hidden">
+      <header class="topbar">
+        <div class="topbar__brand">
+          <span class="topbar__badge">ZTU</span>
+          <span class="topbar__title">Профіль студента</span>
+        </div>
+        <button id="logoutBtn" class="btn btn--ghost" type="button">Вийти</button>
+      </header>
+
+      <main class="wrap">
+        <div id="alert" class="alert hidden" role="alert"></div>
+
+        <section class="grid">
+          <!-- Ліва картка: фото + основне -->
+          <aside class="card card--profile">
+            <div class="photo">
+              <img id="photoPreview" class="photo__img hidden" alt="Фото студента" />
+              <div id="photoPlaceholder" class="photo__placeholder">Ф</div>
+            </div>
+            <label class="photo__upload btn btn--secondary">
+              Змінити фото
+              <input id="photoInput" type="file" accept="image/*" hidden />
+            </label>
+
+            <h1 id="viewName" class="profile__name">—</h1>
+            <p id="viewEmail" class="profile__email">—</p>
+            <span class="chip">Студент</span>
+
+            <ul class="facts">
+              <li><span>Група</span><b id="viewGroup">—</b></li>
+              <li><span>Курс</span><b id="viewCourse">—</b></li>
+            </ul>
+          </aside>
+
+          <!-- Права картка: форма редагування -->
+          <div class="card">
+            <h2 class="card__title">Редагування профілю</h2>
+            <form id="profileForm" class="form">
+              <label class="field">
+                <span>ПІБ</span>
+                <input name="full_name" type="text" placeholder="Прізвище Ім'я По батькові" required />
+              </label>
+
+              <label class="field">
+                <span>Email</span>
+                <input id="emailField" type="email" disabled />
+              </label>
+
+              <div class="row">
+                <label class="field">
+                  <span>Група</span>
+                  <input name="group_name" type="text" placeholder="Напр. ІПЗ-21-1" />
+                </label>
+                <label class="field">
+                  <span>Курс</span>
+                  <select name="course">
+                    <option value="">—</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                  </select>
+                </label>
+              </div>
+
+              <label class="field">
+                <span>Досягнення</span>
+                <textarea
+                  name="achievements"
+                  rows="6"
+                  placeholder="Олімпіади, сертифікати, проєкти, публікації…"
+                ></textarea>
+              </label>
+
+              <button class="btn btn--primary" type="submit">Зберегти зміни</button>
+            </form>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="/profileStudent.js"></script>
+  </body>
+</html>

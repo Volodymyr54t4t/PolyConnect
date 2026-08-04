@@ -70,7 +70,8 @@ async function checkSession() {
     const res = await fetch("/api/me")
     if (!res.ok) return renderAuth()
     const data = await res.json()
-    renderAccount(data.user)
+    // Вже авторизований — одразу на сторінку профілю
+    window.location.href = data.redirect || "/"
   } catch {
     renderAuth()
   }
@@ -89,8 +90,8 @@ els.loginForm.addEventListener("submit", async (e) => {
       email: fd.get("email"),
       password: fd.get("password"),
     })
-    renderAccount(data.user)
     els.loginForm.reset()
+    window.location.href = data.redirect || "/"
   } catch (err) {
     showAlert(err.message)
   }
@@ -108,8 +109,8 @@ els.registerForm.addEventListener("submit", async (e) => {
       role: fd.get("role"),
       password: fd.get("password"),
     })
-    renderAccount(data.user)
     els.registerForm.reset()
+    window.location.href = data.redirect || "/"
   } catch (err) {
     showAlert(err.message)
   }

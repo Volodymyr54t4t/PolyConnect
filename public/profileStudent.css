@@ -1,0 +1,310 @@
+:root {
+  --bg: #0f1729;
+  --panel: #ffffff;
+  --ink: #0f1729;
+  --muted: #5b6472;
+  --line: #e4e7ec;
+  --primary: #1e5eff;
+  --primary-ink: #ffffff;
+  --danger: #d92d20;
+  --ok: #067647;
+  --ok-bg: #ecfdf3;
+  --err-bg: #fef3f2;
+  --radius: 16px;
+  --shadow: 0 20px 60px rgba(6, 14, 40, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Segoe UI", Roboto, system-ui, -apple-system, sans-serif;
+  color: var(--ink);
+  background: #f4f6fb;
+  min-height: 100vh;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.loader {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  font-size: 16px;
+}
+
+/* -------- Верхня панель -------- */
+.topbar {
+  height: 64px;
+  background: var(--bg);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+
+.topbar__brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.topbar__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #1e5eff, #4b8bff);
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 1px;
+}
+
+.topbar__title {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* -------- Контент -------- */
+.wrap {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 28px 24px 56px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.card {
+  background: var(--panel);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 24px;
+}
+
+.card__title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 18px;
+}
+
+/* -------- Ліва картка профілю -------- */
+.card--profile {
+  text-align: center;
+}
+
+.photo {
+  width: 128px;
+  height: 128px;
+  margin: 4px auto 14px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(135deg, #1e5eff, #4b8bff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.photo__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo__placeholder {
+  font-size: 46px;
+  font-weight: 800;
+  color: #fff;
+}
+
+.photo__upload {
+  display: inline-block;
+  cursor: pointer;
+  margin-bottom: 18px;
+}
+
+.profile__name {
+  font-size: 20px;
+  font-weight: 800;
+  text-wrap: balance;
+}
+
+.profile__email {
+  color: var(--muted);
+  font-size: 14px;
+  margin-top: 4px;
+  word-break: break-word;
+}
+
+.chip {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.facts {
+  list-style: none;
+  margin-top: 22px;
+  display: grid;
+  gap: 10px;
+  text-align: left;
+}
+
+.facts li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  background: #f6f8fc;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+.facts li span {
+  color: var(--muted);
+}
+
+.facts li b {
+  color: var(--ink);
+}
+
+/* -------- Форма -------- */
+.form {
+  display: grid;
+  gap: 16px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 140px;
+  gap: 16px;
+}
+
+.field {
+  display: grid;
+  gap: 7px;
+}
+
+.field span {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font-size: 15px;
+  color: var(--ink);
+  background: #fff;
+  font-family: inherit;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.field textarea {
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(30, 94, 255, 0.14);
+}
+
+.field input:disabled {
+  background: #f3f5f9;
+  color: var(--muted);
+}
+
+/* -------- Кнопки -------- */
+.btn {
+  padding: 12px 18px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.1s, opacity 0.15s, background 0.15s;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn--primary {
+  background: var(--primary);
+  color: var(--primary-ink);
+}
+
+.btn--primary:hover {
+  background: #1a52e0;
+}
+
+.btn--secondary {
+  background: #eef2ff;
+  color: var(--primary);
+}
+
+.btn--ghost {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.btn--ghost:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+/* -------- Сповіщення -------- */
+.alert {
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  margin-bottom: 18px;
+  line-height: 1.5;
+}
+
+.alert.is-ok {
+  background: var(--ok-bg);
+  color: var(--ok);
+}
+
+.alert.is-err {
+  background: var(--err-bg);
+  color: var(--danger);
+}
+
+/* -------- Адаптив -------- */
+@media (max-width: 800px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .row {
+    grid-template-columns: 1fr 1fr;
+  }
+}

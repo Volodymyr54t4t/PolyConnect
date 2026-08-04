@@ -51,6 +51,24 @@ async function initDb() {
       created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
     );
   `)
+
+  // Профільні поля (додаються за потреби, безпечно повторно)
+  const columns = [
+    "photo TEXT",
+    // студент
+    "group_name TEXT",
+    "course INTEGER",
+    "achievements TEXT",
+    // викладач
+    "position TEXT",
+    "department TEXT",
+    "subjects TEXT",
+    "contacts TEXT",
+  ]
+  for (const col of columns) {
+    await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS ${col};`)
+  }
+
   console.log("[v0] Таблиця users готова")
 }
 
@@ -77,7 +95,36 @@ function setAuthCookie(res, token) {
 }
 
 function publicUser(u) {
-  return { id: u.id, full_name: u.full_name, email: u.email, role: u.role, created_at: u.created_at }
+  let subjects = []
+  if (u.subjects) {
+    try {
+      subjects = JSON.parse(u.subjects)
+    } catch {
+      subjects = []
+    }
+  }
+  return {
+    id: u.id,
+    full_name: u.full_name,
+    email: u.email,
+    role: u.role,
+    created_at: u.created_at,
+    photo: u.photo || null,
+    // студент
+    group_name: u.group_name || "",
+    course: u.course || null,
+    achievements: u.achievements || "",
+    // викладач
+    position: u.position || "",
+    department: u.department || "",
+    subjects,
+    contacts: u.contacts || "",
+  }
+}
+
+// Куди перенаправляти після авторизації залежно від ролі
+function profilePath(role) {
+  return role === "Студент" ? "/profileStudent.html" : "/profileTeacher.html"
 }
 
 // Мідлвеар авторизації (вбудований у цей файл)
@@ -93,7 +140,7 @@ function authRequired(req, res, next) {
 }
 
 // ------------------------- Мідлвеари Express -------------------------
-app.use(express.json())
+app.use(express.json({ limit: "6mb" }))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, "public")))
 
@@ -133,7 +180,12 @@ app.post("/api/register", async (req, res) => {
     const user = result.rows[0]
     const token = signToken(user)
     setAuthCookie(res, token)
-    res.status(201).json({ message: "Реєстрація успішна", token, user: publicUser(user) })
+    res.status(201).json({
+      message: "Реєстрація успішна",
+      token,
+      user: publicUser(user),
+      redirect: profilePath(user.role),
+    })
   } catch (err) {
     console.error("[v0] register error:", err.message)
     res.status(500).json({ error: "Помилка сервера при реєстрації" })
@@ -165,7 +217,12 @@ app.post("/api/login", async (req, res) => {
 
     const token = signToken(user)
     setAuthCookie(res, token)
-    res.json({ message: "Вхід успішний", token, user: publicUser(user) })
+    res.json({
+      message: "Вхід успішний",
+      token,
+      user: publicUser(user),
+      redirect: profilePath(user.role),
+    })
   } catch (err) {
     console.error("[v0] login error:", err.message)
     res.status(500).json({ error: "Помилка сервера при вході" })
@@ -183,10 +240,74 @@ app.get("/api/me", authRequired, async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM users WHERE id = $1", [req.user.id])
     if (result.rows.length === 0) return res.status(404).json({ error: "Користувача не знайдено" })
-    res.json({ user: publicUser(result.rows[0]) })
+    const user = publicUser(result.rows[0])
+    res.json({ user, redirect: profilePath(user.role) })
   } catch (err) {
     console.error("[v0] me error:", err.message)
     res.status(500).json({ error: "Помилка сервера" })
+  }
+})
+
+// Оновлення профілю (студент або викладач залежно від ролі)
+app.put("/api/profile", authRequired, async (req, res) => {
+  try {
+    const cur = await pool.query("SELECT * FROM users WHERE id = $1", [req.user.id])
+    if (cur.rows.length === 0) return res.status(404).json({ error: "Користувача не знайдено" })
+    const role = cur.rows[0].role
+    const b = req.body || {}
+
+    if (role === "Студент") {
+      const course = b.course === "" || b.course == null ? null : Number.parseInt(b.course, 10)
+      if (course != null && (Number.isNaN(course) || course < 1 || course > 6)) {
+        return res.status(400).json({ error: "Курс має бути від 1 до 6" })
+      }
+      await pool.query(
+        `UPDATE users
+           SET full_name = COALESCE($1, full_name),
+               photo = $2,
+               group_name = $3,
+               course = $4,
+               achievements = $5
+         WHERE id = $6`,
+        [
+          b.full_name?.trim() || null,
+          b.photo ?? cur.rows[0].photo,
+          b.group_name || null,
+          course,
+          b.achievements || null,
+          req.user.id,
+        ],
+      )
+    } else {
+      // Викладач та адміністративні ролі
+      let subjects = "[]"
+      if (Array.isArray(b.subjects)) subjects = JSON.stringify(b.subjects)
+      await pool.query(
+        `UPDATE users
+           SET full_name = COALESCE($1, full_name),
+               photo = $2,
+               position = $3,
+               department = $4,
+               subjects = $5,
+               contacts = $6
+         WHERE id = $7`,
+        [
+          b.full_name?.trim() || null,
+          b.photo ?? cur.rows[0].photo,
+          b.position || null,
+          b.department || null,
+          subjects,
+          b.contacts || null,
+          req.user.id,
+        ],
+      )
+    }
+
+    const updated = await pool.query("SELECT * FROM users WHERE id = $1", [req.user.id])
+    res.json({ message: "Профіль збережено", user: publicUser(updated.rows[0]) })
+  } catch (err) {
+    console.error("[v0] profile error:", err.message)
+    res.status(500).json({ error: "Помилка сервера при збереженні профілю" })
   }
 })
 
