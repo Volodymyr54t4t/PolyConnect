@@ -58,7 +58,13 @@ async function initDb() {
       ADD COLUMN IF NOT EXISTS phone        TEXT,
       ADD COLUMN IF NOT EXISTS department   TEXT,
       ADD COLUMN IF NOT EXISTS group_name   TEXT,
-      ADD COLUMN IF NOT EXISTS about        TEXT;
+      ADD COLUMN IF NOT EXISTS about        TEXT,
+      ADD COLUMN IF NOT EXISTS course        TEXT,
+      ADD COLUMN IF NOT EXISTS achievements  TEXT,
+      ADD COLUMN IF NOT EXISTS photo         TEXT,
+      ADD COLUMN IF NOT EXISTS position      TEXT,
+      ADD COLUMN IF NOT EXISTS subjects      JSONB DEFAULT '[]'::jsonb,
+      ADD COLUMN IF NOT EXISTS contacts      TEXT;
   `)
   console.log("[v0] Таблиця users готова")
 }
@@ -86,12 +92,30 @@ function setAuthCookie(res, token) {
 }
 
 function publicUser(u) {
-  // Профіль вважається заповненим, коли є телефон і кафедра,
-  // а для студентів — ще й група.
   const isStudent = u.role === "Студент"
-  const profileComplete = Boolean(
-    u.phone && u.phone.trim() && u.department && u.department.trim() && (!isStudent || (u.group_name && u.group_name.trim())),
-  )
+
+  // Предмети зберігаються як JSONB → нормалізуємо у масив
+  let subjects = []
+  if (Array.isArray(u.subjects)) subjects = u.subjects
+  else if (typeof u.subjects === "string" && u.subjects.trim()) {
+    try {
+      const parsed = JSON.parse(u.subjects)
+      if (Array.isArray(parsed)) subjects = parsed
+    } catch {
+      subjects = []
+    }
+  }
+
+  // Заповненість профілю залежить від ролі:
+  //  • студент — потрібні група і курс
+  //  • викладач/інші — потрібні посада і кафедра
+  const profileComplete = isStudent
+    ? Boolean(u.group_name && u.group_name.trim() && u.course && String(u.course).trim())
+    : Boolean(u.position && u.position.trim() && u.department && u.department.trim())
+
+  // Сторінка профілю, що відповідає ролі
+  const redirect = isStudent ? "/profileStudent" : "/profileTeacher"
+
   return {
     id: u.id,
     full_name: u.full_name,
@@ -101,7 +125,14 @@ function publicUser(u) {
     department: u.department || "",
     group_name: u.group_name || "",
     about: u.about || "",
+    course: u.course || "",
+    achievements: u.achievements || "",
+    photo: u.photo || "",
+    position: u.position || "",
+    subjects,
+    contacts: u.contacts || "",
     profile_complete: profileComplete,
+    redirect,
     created_at: u.created_at,
   }
 }
@@ -119,7 +150,7 @@ function authRequired(req, res, next) {
 }
 
 // ------------------------- Мідлвеари Express -------------------------
-app.use(express.json())
+app.use(express.json({ limit: "8mb" })) // великий ліміт для фото (base64)
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, "public")))
 
@@ -209,32 +240,82 @@ app.get("/api/me", authRequired, async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM users WHERE id = $1", [req.user.id])
     if (result.rows.length === 0) return res.status(404).json({ error: "Користувача не знайдено" })
-    res.json({ user: publicUser(result.rows[0]) })
+    const user = publicUser(result.rows[0])
+    res.json({ user, redirect: user.redirect })
   } catch (err) {
     console.error("[v0] me error:", err.message)
     res.status(500).json({ error: "Помилка сервера" })
   }
 })
 
-// Оновлення профілю
+// Оновлення профілю — приймає будь-який набір полів (студент або викладач),
+// оновлюються лише передані поля, решта лишається без змін.
 app.put("/api/profile", authRequired, async (req, res) => {
   try {
-    const { phone, department, group_name, about } = req.body || {}
+    const body = req.body || {}
+
+    // Поточний запис — щоб оновити тільки передані поля (merge)
+    const current = await pool.query("SELECT * FROM users WHERE id = $1", [req.user.id])
+    if (current.rows.length === 0) return res.status(404).json({ error: "Користувача не знайдено" })
+    const u = current.rows[0]
+
+    // Дозволені текстові поля профілю
+    const textFields = [
+      "full_name",
+      "phone",
+      "department",
+      "group_name",
+      "about",
+      "course",
+      "achievements",
+      "photo",
+      "position",
+      "contacts",
+    ]
+
+    const nextValues = {}
+    for (const key of textFields) {
+      nextValues[key] = key in body ? (body[key] == null ? "" : String(body[key])) : u[key]
+    }
+
+    // ПІБ не має ставати порожнім
+    const fullName = (nextValues.full_name || "").trim() || u.full_name
+
+    // Предмети (масив) → JSONB
+    const subjects = Array.isArray(body.subjects)
+      ? JSON.stringify(body.subjects)
+      : JSON.stringify(Array.isArray(u.subjects) ? u.subjects : [])
 
     const result = await pool.query(
-      `UPDATE users
-         SET phone = $1, department = $2, group_name = $3, about = $4
-       WHERE id = $5
+      `UPDATE users SET
+         full_name = $1,
+         phone = $2,
+         department = $3,
+         group_name = $4,
+         about = $5,
+         course = $6,
+         achievements = $7,
+         photo = $8,
+         position = $9,
+         contacts = $10,
+         subjects = $11::jsonb
+       WHERE id = $12
        RETURNING *`,
       [
-        (phone || "").trim(),
-        (department || "").trim(),
-        (group_name || "").trim(),
-        (about || "").trim(),
+        fullName,
+        nextValues.phone,
+        nextValues.department,
+        nextValues.group_name,
+        nextValues.about,
+        nextValues.course,
+        nextValues.achievements,
+        nextValues.photo,
+        nextValues.position,
+        nextValues.contacts,
+        subjects,
         req.user.id,
       ],
     )
-    if (result.rows.length === 0) return res.status(404).json({ error: "Користувача не знайдено" })
     res.json({ message: "Профіль оновлено", user: publicUser(result.rows[0]) })
   } catch (err) {
     console.error("[v0] profile error:", err.message)
@@ -316,6 +397,15 @@ app.get("/", (req, res) => {
 // Головна сторінка
 app.get("/home", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "home.html"))
+})
+
+// Сторінки профілю
+app.get("/profileStudent", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "profileStudent.html"))
+})
+
+app.get("/profileTeacher", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "profileTeacher.html"))
 })
 
 // ------------------------- Старт -------------------------

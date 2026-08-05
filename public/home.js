@@ -3,11 +3,11 @@
 const $ = (sel) => document.querySelector(sel)
 
 const els = {
-  alert: $("#alert"),
   logoutBtn: $("#logoutBtn"),
   profileBanner: $("#profileBanner"),
-  profileForm: $("#profileForm"),
-  groupField: $("#groupField"),
+  bannerCta: $("#bannerCta"),
+  navProfile: $("#navProfile"),
+  openProfileBtn: $("#openProfileBtn"),
   // Верхня панель
   chipAvatar: $("#chipAvatar"),
   chipName: $("#chipName"),
@@ -17,21 +17,19 @@ const els = {
   metaEmail: $("#metaEmail"),
   metaRole: $("#metaRole"),
   metaStatus: $("#metaStatus"),
+  // Картка профілю
+  profileHint: $("#profileHint"),
+  factEmail: $("#factEmail"),
+  factRole: $("#factRole"),
+  factGroupRow: $("#factGroupRow"),
+  factGroup: $("#factGroup"),
+  factStatus: $("#factStatus"),
   // Навігація
   navlinks: document.querySelectorAll(".navlink"),
 }
 
-// ------- Допоміжні -------
-function showAlert(message, ok = false) {
-  els.alert.textContent = message
-  els.alert.classList.remove("hidden", "is-ok", "is-err")
-  els.alert.classList.add(ok ? "is-ok" : "is-err")
-}
-
-function clearAlert() {
-  els.alert.classList.add("hidden")
-  els.alert.textContent = ""
-}
+// Куди веде сторінка профілю (залежить від ролі)
+let profileUrl = "/profileStudent"
 
 async function apiJson(path, method, body) {
   const res = await fetch(path, {
@@ -46,6 +44,9 @@ async function apiJson(path, method, body) {
 
 // ------- Рендер даних користувача -------
 function renderUser(user) {
+  const isStudent = user.role === "Студент"
+  profileUrl = user.redirect || (isStudent ? "/profileStudent" : "/profileTeacher")
+
   const initial = (user.full_name || "?").trim().charAt(0).toUpperCase()
   els.chipAvatar.textContent = initial
   els.chipName.textContent = user.full_name
@@ -54,25 +55,27 @@ function renderUser(user) {
   els.metaEmail.textContent = user.email
   els.metaRole.textContent = user.role
 
-  // Поле "група" показуємо лише для студентів
-  els.groupField.classList.toggle("hidden", user.role !== "Студент")
-
-  // Заповнюємо форму наявними даними
-  els.profileForm.phone.value = user.phone || ""
-  els.profileForm.department.value = user.department || ""
-  els.profileForm.group_name.value = user.group_name || ""
-  els.profileForm.about.value = user.about || ""
+  // Картка профілю
+  els.factEmail.textContent = user.email
+  els.factRole.textContent = user.role
+  els.factGroupRow.classList.toggle("hidden", !isStudent)
+  els.factGroup.textContent = user.group_name || "—"
+  els.openProfileBtn.setAttribute("href", profileUrl)
 
   // Статус профілю + банер
   if (user.profile_complete) {
     els.metaStatus.textContent = "Заповнено"
     els.metaStatus.classList.add("is-ok")
     els.metaStatus.classList.remove("is-warn")
+    els.factStatus.textContent = "Заповнено"
+    els.profileHint.textContent = "Ваш профіль заповнено. Ви можете переглянути або оновити його."
     els.profileBanner.classList.add("hidden")
   } else {
     els.metaStatus.textContent = "Не заповнено"
     els.metaStatus.classList.add("is-warn")
     els.metaStatus.classList.remove("is-ok")
+    els.factStatus.textContent = "Не заповнено"
+    els.profileHint.textContent = "Профіль ще не заповнений — заповніть обов'язкові поля."
     els.profileBanner.classList.remove("hidden")
   }
 }
@@ -82,7 +85,6 @@ async function init() {
   try {
     const res = await fetch("/api/me")
     if (!res.ok) {
-      // Не авторизований → на сторінку входу
       window.location.href = "/"
       return
     }
@@ -93,29 +95,15 @@ async function init() {
   }
 }
 
-// ------- Збереження профілю -------
-els.profileForm.addEventListener("submit", async (e) => {
-  e.preventDefault()
-  clearAlert()
-  const fd = new FormData(els.profileForm)
-  try {
-    const data = await apiJson("/api/profile", "PUT", {
-      phone: fd.get("phone"),
-      department: fd.get("department"),
-      group_name: fd.get("group_name"),
-      about: fd.get("about"),
-    })
-    renderUser(data.user)
-    if (data.user.profile_complete) {
-      showAlert("Профіль збережено. Дякуємо — усі обов'язкові поля заповнено!", true)
-    } else {
-      showAlert("Профіль збережено, але деякі обов'язкові поля (*) ще порожні.", false)
-    }
-    window.scrollTo({ top: 0, behavior: "smooth" })
-  } catch (err) {
-    showAlert(err.message)
-  }
-})
+// ------- Переходи до сторінки профілю -------
+function goToProfile(e) {
+  if (e) e.preventDefault()
+  window.location.href = profileUrl
+}
+
+els.bannerCta.addEventListener("click", goToProfile)
+els.navProfile.addEventListener("click", goToProfile)
+els.openProfileBtn.addEventListener("click", goToProfile)
 
 // ------- Вихід -------
 els.logoutBtn.addEventListener("click", async () => {
@@ -125,14 +113,6 @@ els.logoutBtn.addEventListener("click", async () => {
     /* ignore */
   }
   window.location.href = "/"
-})
-
-// ------- Підсвічування активного пункта навігації при скролі -------
-els.navlinks.forEach((link) => {
-  link.addEventListener("click", () => {
-    els.navlinks.forEach((l) => l.classList.remove("is-active"))
-    link.classList.add("is-active")
-  })
 })
 
 // Старт

@@ -18,7 +18,7 @@
 
       <nav class="topbar__nav" aria-label="Головна навігація">
         <a href="#dashboard" class="navlink is-active">Головна</a>
-        <a href="#profile" class="navlink">Профіль</a>
+        <a href="#profile" class="navlink" id="navProfile">Профіль</a>
       </nav>
 
       <div class="topbar__user">
@@ -38,7 +38,7 @@
           <strong>Ваш профіль ще не заповнений.</strong>
           <span>Будь ласка, заповніть дані профілю, щоб користуватися всіма можливостями порталу.</span>
         </div>
-        <a href="#profile" class="btn btn--primary btn--sm banner__cta">Заповнити зараз</a>
+        <a href="#profile" class="btn btn--primary btn--sm banner__cta" id="bannerCta">Заповнити зараз</a>
       </div>
 
       <!-- Привітання -->
@@ -72,35 +72,17 @@
       <section id="profile" class="section card profile-card">
         <div class="profile-card__head">
           <h2 class="section__title">Мій профіль</h2>
-          <p class="section__hint">Заповніть або оновіть контактні дані та інформацію про себе.</p>
+          <p class="section__hint" id="profileHint">Перегляньте та оновіть свій профіль.</p>
         </div>
 
-        <div id="alert" class="alert hidden" role="status"></div>
+        <ul class="facts" id="profileFacts">
+          <li><span>Пошта</span><b id="factEmail">—</b></li>
+          <li><span>Роль</span><b id="factRole">—</b></li>
+          <li id="factGroupRow"><span>Група</span><b id="factGroup">—</b></li>
+          <li><span>Статус</span><b id="factStatus">—</b></li>
+        </ul>
 
-        <form id="profileForm" class="form" novalidate>
-          <div class="grid-2">
-            <label class="field">
-              <span>Телефон *</span>
-              <input type="tel" name="phone" placeholder="+380 XX XXX XX XX" autocomplete="tel" />
-            </label>
-            <label class="field">
-              <span>Кафедра *</span>
-              <input type="text" name="department" placeholder="Напр. Комп'ютерних наук" />
-            </label>
-          </div>
-
-          <label class="field" id="groupField">
-            <span>Академічна група *</span>
-            <input type="text" name="group_name" placeholder="Напр. ІПЗ-24-1" />
-          </label>
-
-          <label class="field">
-            <span>Про себе</span>
-            <textarea name="about" rows="4" placeholder="Коротко про себе, напрям діяльності, інтереси…"></textarea>
-          </label>
-
-          <button class="btn btn--primary" type="submit">Зберегти профіль</button>
-        </form>
+        <a class="btn btn--primary" id="openProfileBtn" href="#">Перейти до профілю</a>
       </section>
     </main>
 
