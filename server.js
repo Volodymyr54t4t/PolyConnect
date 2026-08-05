@@ -51,6 +51,15 @@ async function initDb() {
       created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
     );
   `)
+
+  // Додаткові поля профілю (додаються безпечно, якщо їх ще немає)
+  await pool.query(`
+    ALTER TABLE users
+      ADD COLUMN IF NOT EXISTS phone        TEXT,
+      ADD COLUMN IF NOT EXISTS department   TEXT,
+      ADD COLUMN IF NOT EXISTS group_name   TEXT,
+      ADD COLUMN IF NOT EXISTS about        TEXT;
+  `)
   console.log("[v0] Таблиця users готова")
 }
 
@@ -77,7 +86,24 @@ function setAuthCookie(res, token) {
 }
 
 function publicUser(u) {
-  return { id: u.id, full_name: u.full_name, email: u.email, role: u.role, created_at: u.created_at }
+  // Профіль вважається заповненим, коли є телефон і кафедра,
+  // а для студентів — ще й група.
+  const isStudent = u.role === "Студент"
+  const profileComplete = Boolean(
+    u.phone && u.phone.trim() && u.department && u.department.trim() && (!isStudent || (u.group_name && u.group_name.trim())),
+  )
+  return {
+    id: u.id,
+    full_name: u.full_name,
+    email: u.email,
+    role: u.role,
+    phone: u.phone || "",
+    department: u.department || "",
+    group_name: u.group_name || "",
+    about: u.about || "",
+    profile_complete: profileComplete,
+    created_at: u.created_at,
+  }
 }
 
 // Мідлвеар авторизації (вбудований у цей файл)
@@ -190,6 +216,32 @@ app.get("/api/me", authRequired, async (req, res) => {
   }
 })
 
+// Оновлення профілю
+app.put("/api/profile", authRequired, async (req, res) => {
+  try {
+    const { phone, department, group_name, about } = req.body || {}
+
+    const result = await pool.query(
+      `UPDATE users
+         SET phone = $1, department = $2, group_name = $3, about = $4
+       WHERE id = $5
+       RETURNING *`,
+      [
+        (phone || "").trim(),
+        (department || "").trim(),
+        (group_name || "").trim(),
+        (about || "").trim(),
+        req.user.id,
+      ],
+    )
+    if (result.rows.length === 0) return res.status(404).json({ error: "Користувача не знайдено" })
+    res.json({ message: "Профіль оновлено", user: publicUser(result.rows[0]) })
+  } catch (err) {
+    console.error("[v0] profile error:", err.message)
+    res.status(500).json({ error: "Помилка сервера при оновленні профілю" })
+  }
+})
+
 // Відновлення пароля — крок 1: запит токена
 app.post("/api/forgot-password", async (req, res) => {
   try {
@@ -259,6 +311,11 @@ app.post("/api/reset-password", async (req, res) => {
 // Кореневий маршрут → сторінка авторизації
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "auth.html"))
+})
+
+// Головна сторінка
+app.get("/home", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "home.html"))
 })
 
 // ------------------------- Старт -------------------------

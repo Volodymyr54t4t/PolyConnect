@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Головна сторінка порталу ЖДТУ — факультет інформаційно-комп'ютерних технологій (ФІКТ)" />
+    <title>Головна — ЖДТУ ФІКТ</title>
+    <link rel="stylesheet" href="auth.css" />
+    <link rel="stylesheet" href="home.css" />
+  </head>
+  <body class="home-body">
+    <!-- Верхня навігація -->
+    <header class="topbar">
+      <a href="/home" class="topbar__brand">
+        <span class="topbar__badge">ЖДТУ</span>
+        <span class="topbar__name">Портал ФІКТ</span>
+      </a>
+
+      <nav class="topbar__nav" aria-label="Головна навігація">
+        <a href="#dashboard" class="navlink is-active">Головна</a>
+        <a href="#profile" class="navlink">Профіль</a>
+      </nav>
+
+      <div class="topbar__user">
+        <div class="chip" id="userChip">
+          <span class="chip__avatar" id="chipAvatar">?</span>
+          <span class="chip__name" id="chipName">—</span>
+        </div>
+        <button class="btn btn--danger btn--sm" id="logoutBtn" type="button">Вийти</button>
+      </div>
+    </header>
+
+    <main class="home">
+      <!-- Банер про незаповнений профіль -->
+      <div id="profileBanner" class="banner hidden" role="alert">
+        <div class="banner__icon" aria-hidden="true">!</div>
+        <div class="banner__text">
+          <strong>Ваш профіль ще не заповнений.</strong>
+          <span>Будь ласка, заповніть дані профілю, щоб користуватися всіма можливостями порталу.</span>
+        </div>
+        <a href="#profile" class="btn btn--primary btn--sm banner__cta">Заповнити зараз</a>
+      </div>
+
+      <!-- Привітання -->
+      <section id="dashboard" class="section hero-card">
+        <div class="hero-card__text">
+          <p class="eyebrow">Ласкаво просимо</p>
+          <h1 class="hero-card__title" id="welcomeName">—</h1>
+          <p class="hero-card__sub">
+            Це головна сторінка порталу факультету інформаційно-комп'ютерних технологій.
+            Звідси ви маєте доступ до свого профілю та розділів системи.
+          </p>
+          <span class="badge" id="welcomeRole">—</span>
+        </div>
+        <div class="hero-card__meta">
+          <div class="meta-row">
+            <span class="meta-row__label">Пошта</span>
+            <span class="meta-row__value" id="metaEmail">—</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-row__label">Роль</span>
+            <span class="meta-row__value" id="metaRole">—</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-row__label">Статус профілю</span>
+            <span class="meta-row__value" id="metaStatus">—</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Профіль -->
+      <section id="profile" class="section card profile-card">
+        <div class="profile-card__head">
+          <h2 class="section__title">Мій профіль</h2>
+          <p class="section__hint">Заповніть або оновіть контактні дані та інформацію про себе.</p>
+        </div>
+
+        <div id="alert" class="alert hidden" role="status"></div>
+
+        <form id="profileForm" class="form" novalidate>
+          <div class="grid-2">
+            <label class="field">
+              <span>Телефон *</span>
+              <input type="tel" name="phone" placeholder="+380 XX XXX XX XX" autocomplete="tel" />
+            </label>
+            <label class="field">
+              <span>Кафедра *</span>
+              <input type="text" name="department" placeholder="Напр. Комп'ютерних наук" />
+            </label>
+          </div>
+
+          <label class="field" id="groupField">
+            <span>Академічна група *</span>
+            <input type="text" name="group_name" placeholder="Напр. ІПЗ-24-1" />
+          </label>
+
+          <label class="field">
+            <span>Про себе</span>
+            <textarea name="about" rows="4" placeholder="Коротко про себе, напрям діяльності, інтереси…"></textarea>
+          </label>
+
+          <button class="btn btn--primary" type="submit">Зберегти профіль</button>
+        </form>
+      </section>
+    </main>
+
+    <script src="home.js"></script>
+  </body>
+</html>

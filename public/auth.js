@@ -69,8 +69,8 @@ async function checkSession() {
   try {
     const res = await fetch("/api/me")
     if (!res.ok) return renderAuth()
-    const data = await res.json()
-    renderAccount(data.user)
+    // Уже авторизований → одразу на головну сторінку
+    window.location.href = "/home"
   } catch {
     renderAuth()
   }
@@ -85,12 +85,13 @@ els.loginForm.addEventListener("submit", async (e) => {
   clearAlert()
   const fd = new FormData(els.loginForm)
   try {
-    const data = await api("/api/login", {
+    await api("/api/login", {
       email: fd.get("email"),
       password: fd.get("password"),
     })
-    renderAccount(data.user)
     els.loginForm.reset()
+    // Успішний вхід → головна сторінка
+    window.location.href = "/home"
   } catch (err) {
     showAlert(err.message)
   }
@@ -102,14 +103,15 @@ els.registerForm.addEventListener("submit", async (e) => {
   clearAlert()
   const fd = new FormData(els.registerForm)
   try {
-    const data = await api("/api/register", {
+    await api("/api/register", {
       full_name: fd.get("full_name"),
       email: fd.get("email"),
       role: fd.get("role"),
       password: fd.get("password"),
     })
-    renderAccount(data.user)
     els.registerForm.reset()
+    // Успішна реєстрація → головна сторінка (профіль ще не заповнений)
+    window.location.href = "/home"
   } catch (err) {
     showAlert(err.message)
   }
