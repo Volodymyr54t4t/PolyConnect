@@ -16,6 +16,8 @@ const els = {
   viewGroup: $("#viewGroup"),
   viewCourse: $("#viewCourse"),
   emailField: $("#emailField"),
+  chipAvatar: $("#chipAvatar"),
+  chipName: $("#chipName"),
 }
 
 let photoData = null // base64 нового фото
@@ -39,6 +41,10 @@ function setPhoto(src) {
 }
 
 function fillView(user) {
+  // Верхня панель: аватар + ім'я
+  els.chipAvatar.textContent = (user.full_name || "?").trim().charAt(0).toUpperCase()
+  els.chipName.textContent = user.full_name || "—"
+
   els.viewName.textContent = user.full_name || "—"
   els.viewEmail.textContent = user.email || "—"
   els.viewGroup.textContent = user.group_name || "—"

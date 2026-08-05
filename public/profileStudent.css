@@ -42,19 +42,25 @@ body {
 
 /* -------- Верхня панель -------- */
 .topbar {
-  height: 64px;
-  background: var(--bg);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  min-height: 64px;
+  background: rgba(15, 23, 41, 0.98);
   color: #fff;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 24px;
+  gap: 24px;
+  padding: 12px 24px;
+  box-shadow: 0 6px 24px rgba(6, 14, 40, 0.18);
 }
 
 .topbar__brand {
   display: flex;
   align-items: center;
   gap: 12px;
+  text-decoration: none;
+  color: #fff;
 }
 
 .topbar__badge {
@@ -63,16 +69,98 @@ body {
   justify-content: center;
   width: 40px;
   height: 40px;
-  border-radius: 10px;
+  border-radius: 11px;
   background: linear-gradient(135deg, #1e5eff, #4b8bff);
   font-weight: 800;
-  font-size: 13px;
-  letter-spacing: 1px;
+  font-size: 14px;
+  letter-spacing: 0.5px;
 }
 
-.topbar__title {
+.topbar__name {
   font-size: 16px;
   font-weight: 700;
+}
+
+/* Навігація */
+.topbar__nav {
+  display: flex;
+  gap: 6px;
+  margin-left: 8px;
+}
+
+.navlink {
+  padding: 8px 14px;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #b9c2d6;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+
+.navlink:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.navlink.is-active {
+  color: #fff;
+  background: rgba(75, 139, 255, 0.28);
+}
+
+/* Користувач */
+.topbar__user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+}
+
+.userchip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 12px 5px 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.userchip__avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  font-size: 14px;
+  font-weight: 800;
+  color: #fff;
+  background: linear-gradient(135deg, #1e5eff, #4b8bff);
+}
+
+.userchip__name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #eef2ff;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Кнопка виходу */
+.btn--danger {
+  background: var(--danger);
+  color: #fff;
+}
+
+.btn--danger:hover {
+  background: #b42318;
+}
+
+.btn--sm {
+  padding: 9px 16px;
+  font-size: 13px;
 }
 
 /* -------- Контент -------- */

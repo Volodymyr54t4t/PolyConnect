@@ -11,11 +11,23 @@
 
     <div id="app" class="app hidden">
       <header class="topbar">
-        <div class="topbar__brand">
-          <span class="topbar__badge">ZTU</span>
-          <span class="topbar__title">Профіль викладача</span>
+        <a href="/home" class="topbar__brand">
+          <span class="topbar__badge">ЖДТУ</span>
+          <span class="topbar__name">Портал ФІКТ</span>
+        </a>
+
+        <nav class="topbar__nav" aria-label="Головна навігація">
+          <a href="/home" class="navlink">Головна</a>
+          <a href="/profileTeacher" class="navlink is-active">Профіль</a>
+        </nav>
+
+        <div class="topbar__user">
+          <div class="userchip">
+            <span class="userchip__avatar" id="chipAvatar">?</span>
+            <span class="userchip__name" id="chipName">—</span>
+          </div>
+          <button id="logoutBtn" class="btn btn--danger btn--sm" type="button">Вийти</button>
         </div>
-        <button id="logoutBtn" class="btn btn--ghost" type="button">Вийти</button>
       </header>
 
       <main class="wrap">

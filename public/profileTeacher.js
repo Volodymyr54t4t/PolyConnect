@@ -82,6 +82,8 @@ const els = {
   positionOther: $("#positionOther"),
   subjectSearch: $("#subjectSearch"),
   subjectList: $("#subjectList"),
+  chipAvatar: $("#chipAvatar"),
+  chipName: $("#chipName"),
 }
 
 let photoData = null
@@ -151,6 +153,10 @@ function renderTags(subjects) {
 }
 
 function fillView(user) {
+  // Верхня панель: аватар + ім'я
+  els.chipAvatar.textContent = (user.full_name || "?").trim().charAt(0).toUpperCase()
+  els.chipName.textContent = user.full_name || "—"
+
   els.viewName.textContent = user.full_name || "—"
   els.viewEmail.textContent = user.email || "—"
   els.viewRole.textContent = user.role || "Викладач"
