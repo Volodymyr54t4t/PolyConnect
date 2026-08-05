@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Новини факультету інформаційно-комп'ютерних технологій (ФІКТ) ЖДТУ" />
+    <title>Новини — ЖДТУ ФІКТ</title>
+    <link rel="stylesheet" href="auth.css" />
+    <link rel="stylesheet" href="home.css" />
+    <link rel="stylesheet" href="news.css" />
+  </head>
+  <body class="home-body">
+    <!-- Верхня навігація -->
+    <header class="topbar">
+      <a href="/home" class="topbar__brand">
+        <span class="topbar__badge">ЖДТУ</span>
+        <span class="topbar__name">Портал ФІКТ</span>
+      </a>
+
+      <nav class="topbar__nav" aria-label="Головна навігація">
+        <a href="/home" class="navlink">Головна</a>
+        <a href="/news" class="navlink is-active">Новини</a>
+      </nav>
+
+      <div class="topbar__user">
+        <div class="chip" id="userChip">
+          <span class="chip__avatar" id="chipAvatar">?</span>
+          <span class="chip__name" id="chipName">—</span>
+        </div>
+        <button class="btn btn--danger btn--sm" id="logoutBtn" type="button">Вийти</button>
+      </div>
+    </header>
+
+    <main class="news-page">
+      <!-- Заголовок розділу -->
+      <section class="news-head">
+        <div>
+          <p class="eyebrow">Стрічка факультету</p>
+          <h1 class="news-head__title">Новини ФІКТ</h1>
+          <p class="news-head__sub" id="roleHint">Останні оголошення, події та повідомлення факультету.</p>
+        </div>
+        <button class="btn btn--primary btn--sm news-head__create hidden" id="createBtn" type="button">
+          + Створити новину
+        </button>
+      </section>
+
+      <!-- Панель фільтрів -->
+      <section class="filters card" aria-label="Фільтри новин">
+        <div class="filters__row">
+          <div class="field field--search">
+            <span>Пошук</span>
+            <input type="text" id="searchInput" placeholder="Пошук за заголовком або текстом…" />
+          </div>
+          <div class="field">
+            <span>Категорія</span>
+            <select id="categoryFilter">
+              <option value="all">Усі категорії</option>
+            </select>
+          </div>
+          <label class="filters__check">
+            <input type="checkbox" id="pinnedOnly" />
+            <span>Лише закріплені</span>
+          </label>
+          <label class="filters__check" id="mineWrap">
+            <input type="checkbox" id="mineOnly" />
+            <span>Тільки мої</span>
+          </label>
+        </div>
+      </section>
+
+      <!-- Стрічка новин -->
+      <section id="newsList" class="news-list" aria-live="polite"></section>
+
+      <!-- Стан порожньої стрічки -->
+      <div id="emptyState" class="empty hidden">
+        <p>Новин поки немає.</p>
+      </div>
+    </main>
+
+    <!-- Модальне вікно створення / редагування -->
+    <div class="modal hidden" id="editorModal" role="dialog" aria-modal="true" aria-labelledby="editorTitle">
+      <div class="modal__backdrop" data-close></div>
+      <div class="modal__panel card">
+        <div class="modal__head">
+          <h2 class="section__title" id="editorTitle">Нова новина</h2>
+          <button class="modal__close" id="editorClose" type="button" aria-label="Закрити">&times;</button>
+        </div>
+        <div id="editorAlert" class="alert is-err hidden" role="alert"></div>
+        <form id="editorForm" class="form">
+          <input type="hidden" id="editorId" />
+          <label class="field">
+            <span>Заголовок</span>
+            <input type="text" id="editorTitleInput" maxlength="200" required />
+          </label>
+          <label class="field">
+            <span>Категорія</span>
+            <select id="editorCategory"></select>
+          </label>
+          <label class="field">
+            <span>Текст новини</span>
+            <textarea id="editorBody" rows="6" required></textarea>
+          </label>
+          <div class="modal__actions">
+            <button type="button" class="btn btn--secondary" id="editorCancel">Скасувати</button>
+            <button type="submit" class="btn btn--primary" id="editorSubmit">Опублікувати</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="news.js"></script>
+  </body>
+</html>
