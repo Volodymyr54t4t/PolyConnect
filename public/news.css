@@ -1,0 +1,614 @@
+/* news.css — стилі модуля "Новини". Використовує змінні з auth.css */
+
+/* -------- Заголовок розділу -------- */
+.news-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.news-head__title {
+  margin-top: 6px;
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--ink);
+  line-height: 1.15;
+}
+
+/* -------- Стрічка новин -------- */
+.news-feed {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.news-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 8px 26px rgba(6, 14, 40, 0.06);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.news-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 40px rgba(6, 14, 40, 0.12);
+}
+
+.news-card__cover {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: #eef2f8;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.news-card__cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.news-card__cover--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9aa6bd;
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  background: linear-gradient(135deg, #17224a 0%, #0f1729 100%);
+  color: #4b8bff;
+}
+
+.news-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 20px 20px;
+  flex: 1;
+}
+
+.news-card__title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.3;
+  cursor: pointer;
+  text-wrap: balance;
+}
+
+.news-card__title:hover {
+  color: var(--primary);
+}
+
+.news-card__excerpt {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.news-card__meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin-top: auto;
+  padding-top: 10px;
+  font-size: 12.5px;
+  color: var(--muted);
+  border-top: 1px solid var(--line);
+}
+
+.news-card__author {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.news-card__author-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 800;
+  color: #fff;
+  background: linear-gradient(135deg, #1e5eff, #4b8bff);
+}
+
+.news-card__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.news-card__actions {
+  display: flex;
+  gap: 8px;
+  padding: 0 20px 18px;
+}
+
+/* -------- Стан стрічки -------- */
+.feed-status {
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
+  padding: 24px 0;
+}
+
+.feed-status.is-empty {
+  padding: 60px 0;
+  font-size: 15px;
+}
+
+#sentinel {
+  height: 1px;
+}
+
+/* -------- Кнопки-варіанти -------- */
+.btn--ghost {
+  background: #f3f5f9;
+  color: var(--ink);
+}
+
+.btn--ghost:hover {
+  background: #e7ebf3;
+}
+
+.btn--xs {
+  width: auto;
+  padding: 7px 12px;
+  font-size: 12.5px;
+  border-radius: 8px;
+}
+
+/* -------- Модальні вікна -------- */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(9, 14, 30, 0.55);
+  backdrop-filter: blur(2px);
+}
+
+.modal__panel {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  animation: modalIn 0.16s ease-out;
+}
+
+.modal__panel--wide {
+  max-width: 780px;
+}
+
+.modal__panel--sm {
+  max-width: 420px;
+}
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--line);
+}
+
+.modal__title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+.modal__close {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 9px;
+  background: #f3f5f9;
+  color: var(--muted);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.modal__close:hover {
+  background: #e7ebf3;
+  color: var(--ink);
+}
+
+.modal__body {
+  padding: 22px 24px 26px;
+  overflow-y: auto;
+}
+
+/* -------- Форма редактора -------- */
+.form textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font-size: 15px;
+  font-family: inherit;
+  color: var(--ink);
+  background: #fff;
+  resize: vertical;
+  line-height: 1.5;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.form textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(30, 94, 255, 0.14);
+}
+
+.file-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* -------- Вибір обкладинки -------- */
+.cover-picker {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.cover-preview {
+  flex-shrink: 0;
+  width: 160px;
+  aspect-ratio: 16 / 9;
+  border-radius: 10px;
+  border: 1px dashed var(--line);
+  background: #f6f8fc;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cover-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cover-preview__empty {
+  font-size: 12.5px;
+  color: #9aa6bd;
+  text-align: center;
+  padding: 0 8px;
+}
+
+.cover-actions {
+  display: grid;
+  gap: 8px;
+}
+
+/* -------- Dropzone -------- */
+.dropzone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  border: 1.5px dashed var(--line);
+  border-radius: 10px;
+  background: #f6f8fc;
+  color: var(--muted);
+  font-size: 14px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.dropzone:hover,
+.dropzone.is-drag {
+  border-color: var(--primary);
+  background: #eef3ff;
+  color: var(--primary);
+}
+
+/* -------- Список вкладень у формі -------- */
+.attach-list {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.attach-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: #f6f8fc;
+  border-radius: 10px;
+  font-size: 13.5px;
+}
+
+.attach-item__thumb {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  object-fit: cover;
+  background: #e2e8f4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: var(--primary);
+}
+
+.attach-item__info {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.attach-item__name {
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.attach-item__size {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.attach-item__remove {
+  flex-shrink: 0;
+  border: none;
+  background: #fee2e2;
+  color: var(--danger);
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.attach-item__remove:hover {
+  background: #fecaca;
+}
+
+/* -------- Перегляд повної новини -------- */
+.view-cover {
+  width: 100%;
+  border-radius: 12px;
+  margin-bottom: 18px;
+  max-height: 340px;
+  object-fit: cover;
+}
+
+.view-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-bottom: 18px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.view-text {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--ink);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.view-section-title {
+  margin: 26px 0 12px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* Галерея зображень */
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.gallery img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.12s ease;
+}
+
+.gallery img:hover {
+  transform: scale(1.03);
+}
+
+/* Вкладення (файли) */
+.files-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.file-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: #f6f8fc;
+  border-radius: 10px;
+  text-decoration: none;
+  color: var(--ink);
+  transition: background 0.15s;
+}
+
+.file-row:hover {
+  background: #eef3ff;
+}
+
+.file-row__icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  background: #e2e8f4;
+  color: var(--primary);
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.file-row__info {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.file-row__name {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-row__size {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.file-row__dl {
+  flex-shrink: 0;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.view-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 26px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+/* -------- Підтвердження -------- */
+.confirm-text {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.confirm-actions .btn {
+  width: auto;
+  padding: 11px 20px;
+}
+
+/* -------- Лайтбокс для перегляду зображення -------- */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  background: rgba(6, 10, 24, 0.88);
+  cursor: zoom-out;
+}
+
+.lightbox img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 10px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+/* -------- Адаптив -------- */
+@media (max-width: 780px) {
+  .news-feed {
+    grid-template-columns: 1fr;
+  }
+  .news-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .cover-picker {
+    flex-direction: column;
+  }
+  .cover-preview {
+    width: 100%;
+  }
+  .gallery {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

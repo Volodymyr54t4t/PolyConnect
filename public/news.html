@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Новини факультету інформаційно-комп'ютерних технологій ЖДТУ (ФІКТ)" />
+    <title>Новини — ЖДТУ ФІКТ</title>
+    <link rel="stylesheet" href="auth.css" />
+    <link rel="stylesheet" href="home.css" />
+    <link rel="stylesheet" href="news.css" />
+  </head>
+  <body class="home-body">
+    <!-- Верхня навігація -->
+    <header class="topbar">
+      <a href="/home" class="topbar__brand">
+        <span class="topbar__badge">ЖДТУ</span>
+        <span class="topbar__name">Портал ФІКТ</span>
+      </a>
+
+      <nav class="topbar__nav" aria-label="Головна навігація">
+        <a href="/home" class="navlink">Головна</a>
+        <a href="/news" class="navlink is-active">Новини</a>
+      </nav>
+
+      <div class="topbar__user">
+        <div class="chip" id="userChip">
+          <span class="chip__avatar" id="chipAvatar">?</span>
+          <span class="chip__name" id="chipName">—</span>
+        </div>
+        <button class="btn btn--danger btn--sm" id="logoutBtn" type="button">Вийти</button>
+      </div>
+    </header>
+
+    <main class="home">
+      <!-- Заголовок розділу + кнопка створення -->
+      <section class="news-head">
+        <div>
+          <p class="eyebrow">Стрічка новин</p>
+          <h1 class="news-head__title">Новини факультету</h1>
+        </div>
+        <button class="btn btn--primary btn--sm" id="createBtn" type="button">+ Створити новину</button>
+      </section>
+
+      <!-- Стрічка -->
+      <section id="feed" class="news-feed" aria-live="polite"></section>
+
+      <!-- Стан завантаження / порожньо -->
+      <div id="feedStatus" class="feed-status">Завантаження…</div>
+
+      <!-- Тригер нескінченної прокрутки -->
+      <div id="sentinel" aria-hidden="true"></div>
+    </main>
+
+    <!-- ============ Модалка: створення / редагування ============ -->
+    <div class="modal hidden" id="editorModal" role="dialog" aria-modal="true" aria-labelledby="editorTitle">
+      <div class="modal__backdrop" data-close></div>
+      <div class="modal__panel">
+        <div class="modal__head">
+          <h2 class="modal__title" id="editorTitle">Нова новина</h2>
+          <button class="modal__close" type="button" data-close aria-label="Закрити">×</button>
+        </div>
+
+        <div class="modal__body">
+          <div id="editorAlert" class="alert hidden"></div>
+
+          <form id="editorForm" class="form">
+            <label class="field">
+              <span>Заголовок *</span>
+              <input type="text" id="fTitle" maxlength="255" placeholder="Введіть заголовок" required />
+            </label>
+
+            <label class="field">
+              <span>Опис</span>
+              <textarea id="fDescription" rows="6" placeholder="Текст новини"></textarea>
+            </label>
+
+            <label class="field">
+              <span>Автор</span>
+              <select id="fAuthor"></select>
+            </label>
+
+            <!-- Обкладинка -->
+            <div class="field">
+              <span>Обкладинка</span>
+              <div class="cover-picker">
+                <div class="cover-preview" id="coverPreview">
+                  <span class="cover-preview__empty">Немає обкладинки</span>
+                </div>
+                <div class="cover-actions">
+                  <label class="btn btn--secondary btn--sm file-label">
+                    Обрати зображення
+                    <input type="file" id="fCover" accept="image/*" hidden />
+                  </label>
+                  <button type="button" class="btn btn--ghost btn--sm" id="removeCoverBtn">Прибрати</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Вкладення -->
+            <div class="field">
+              <span>Прикріплені файли (зображення потраплять у галерею)</span>
+              <label class="dropzone" id="dropzone">
+                <input type="file" id="fFiles" multiple hidden />
+                <span>Натисніть, щоб додати файли</span>
+              </label>
+              <ul class="attach-list" id="attachList"></ul>
+            </div>
+
+            <button type="submit" class="btn btn--primary" id="saveBtn">Опублікувати</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ Модалка: перегляд повної новини ============ -->
+    <div class="modal hidden" id="viewModal" role="dialog" aria-modal="true" aria-labelledby="viewTitle">
+      <div class="modal__backdrop" data-close></div>
+      <div class="modal__panel modal__panel--wide">
+        <div class="modal__head">
+          <h2 class="modal__title" id="viewTitle">—</h2>
+          <button class="modal__close" type="button" data-close aria-label="Закрити">×</button>
+        </div>
+        <div class="modal__body" id="viewBody">
+          <div class="feed-status">Завантаження…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ Підтвердження видалення ============ -->
+    <div class="modal hidden" id="confirmModal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+      <div class="modal__backdrop" data-close></div>
+      <div class="modal__panel modal__panel--sm">
+        <div class="modal__head">
+          <h2 class="modal__title" id="confirmTitle">Видалити новину?</h2>
+        </div>
+        <div class="modal__body">
+          <p class="confirm-text">Цю дію не можна скасувати. Новина та всі її вкладення будуть видалені назавжди.</p>
+          <div class="confirm-actions">
+            <button class="btn btn--ghost" type="button" data-close>Скасувати</button>
+            <button class="btn btn--danger" type="button" id="confirmDeleteBtn">Видалити</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="news.js"></script>
+  </body>
+</html>
