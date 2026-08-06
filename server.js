@@ -94,15 +94,23 @@ async function initDb() {
       ADD COLUMN IF NOT EXISTS updated_at   TIMESTAMPTZ NOT NULL DEFAULT now();
   `)
 
-  // Знімаємо NOT NULL зі старих колонок (якщо таблиця лишилася з попередньої версії),
-  // щоб нові вставки не падали через незаповнені legacy-поля (напр. body).
+  // Знімаємо NOT NULL з усіх legacy-колонок, якими цей модуль не керує
+  // (напр. body, category, pinned зі старої версії таблиці), щоб нові
+  // вставки не падали через незаповнені поля, у яких немає DEFAULT.
   await pool.query(`
     DO $$
+    DECLARE col RECORD;
     BEGIN
-      IF EXISTS (SELECT 1 FROM information_schema.columns
-                 WHERE table_name = 'news' AND column_name = 'body') THEN
-        ALTER TABLE news ALTER COLUMN body DROP NOT NULL;
-      END IF;
+      FOR col IN
+        SELECT column_name
+        FROM information_schema.columns
+        WHERE table_name = 'news'
+          AND is_nullable = 'NO'
+          AND column_default IS NULL
+          AND column_name NOT IN ('id', 'title', 'author_name', 'created_at', 'updated_at')
+      LOOP
+        EXECUTE format('ALTER TABLE news ALTER COLUMN %I DROP NOT NULL', col.column_name);
+      END LOOP;
     END $$;
   `)
 
